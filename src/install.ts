@@ -33,13 +33,10 @@ export default function install(Vue: typeof VueClass, mobxMethods: IMobxMethods)
     const disposers: Disposer[] = vm['__movueDisposers__'] = []
 
     entries.forEach(({ key, compute }) => {
-      disposers.push(mobxMethods.reaction(
-        () => compute.apply(vm),
-        val => {
-          vm[key] = val
-        },
-        true
-      ))
+      const collect = () => compute.apply(vm)
+      const update = val => vm[key] = val
+      disposers.push(mobxMethods.reaction(collect, update, true))
+      vm.$watch(collect, update)
     })
   }
 

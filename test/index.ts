@@ -84,16 +84,20 @@ test(`can use this.data in fromMobx`, done => {
   expect(vm.$el.textContent).toBe('3|5')
 
   vm.bar++
-  runInAction(() => {
-    data.foo++
-  })
 
   nextTick(() => {
-    expect(vm.$el.textContent).toBe('5|7')
-    done()
+    expect(vm.$el.textContent).toBe('4|6')
+
+    runInAction(() => {
+      data.foo++
+    })
+
+    nextTick(() => {
+      expect(vm.$el.textContent).toBe('5|7')
+      done()
+    })
   })
 })
-
 
 test(`fields in fromMobx can be used in watch & computed`, done => {
   Vue.use(Movue, { reaction })
